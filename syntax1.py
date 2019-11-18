@@ -9,19 +9,35 @@ ProperNoun = Lexicon("ProperNoun")
 ProperNoun.addRules("America's National Park System", "San Diego Zoo", "American Red Cross", "the U.S. Fund for UNICEF", "Donald Trump")
 
 RelativePronoun = Lexicon("RelativePronoun")
-RelativePronoun.addRules("that", "which", "of those who", "for those who", "through those who")
+RelativePronoun.addRules("that", "which")
+RelativePronoun.addRule("of", "those", "who")
+RelativePronoun.addRule("for", "those", "who")
+RelativePronoun.addRule("through", "those", "who")
+
 
 SubordinateConjunction = Lexicon("SubordinateConjunction")
-SubordinateConjunction.addRules("as", "in order that", "on which", "by which", "through which")
+SubordinateConjunction.addRules("as")
+SubordinateConjunction.addRule("in", "order", "that")
+SubordinateConjunction.addRule("on", "which")
+SubordinateConjunction.addRule("by", "which")
+SubordinateConjunction.addRule("through", "which")
 
 Adjective = Lexicon("Adjective")
 Adjective.addRules("excellent", "life-threatening", "poor", "better", "challenging", "natural", "lasting")
 
 Verb = Lexicon("Verb")
-Verb.addRules("create", "bring", "inspire", "increase", "mobilize", "undertake", "develop", "support", "engage in")
+Verb.addRules("create", "bring", "inspire", "increase", "mobilize", "undertake", "develop", "support")
+Verb.addRule("engage", "in")
 
 Preposition = Lexicon("Preposition")
-Preposition.addRules("about", "below", "off", "toward", "above", "beneath", "for", "on", "under", "across", "beside", "from", "onto", "underneath", "after", "between", "in", "out", "until", "against", "beyond", "in front of", "outside", "up", "along", "but", "inside", "over", "upon", "among", "by", "in spite of", "past", "up to", "around", "concerning", "instead of", "regarding", "with", "at", "despite", "into", "since", "within", "because of", "down", "like", "through", "without", "before", "during", "near", "throughout", "with regard to", "behind", "of", "to", "with respect to")
+Preposition.addRules("about", "below", "off", "toward", "above", "beneath", "for", "on", "under", "across", "beside", "from", "onto", "underneath", "after", "between", "in", "out", "until", "against", "beyond", "outside", "up", "along", "but", "inside", "over", "upon", "among", "by", "past", "around", "concerning", "regarding", "with", "at", "despite", "into", "since", "within", "down", "like", "through", "without", "before", "during", "near", "throughout", "behind", "of", "to")
+Preposition.addRule("in", "front", "of")
+Preposition.addRule("in", "spite", "of")
+Preposition.addRule("up", "to")
+Preposition.addRule("instead", "of")
+Preposition.addRule("because", "of")
+Preposition.addRule("with", "regard", "to")
+Preposition.addRule("with", "respect", "to")
 
 # --- Recursive lexicons
 PrepositionalPhrase = Lexicon("PrepositionalPhrase")
