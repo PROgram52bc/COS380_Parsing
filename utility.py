@@ -11,8 +11,17 @@ class Rule:
         if not isinstance(body, (list, tuple)):
             raise Exception("body must be a list or a tuple")
         self.body = tuple(body)
+    def isPOS(self):
+        """ return true if the rule has only one string as its body """
+        return len(self.body) == 1 and isinstance(self.body[0], str)
     def __repr__(self):
         return "<Rule {} => {}>".format(repr(self.head), repr(self.body))
+    def __eq__(self, other):
+        if isinstance(other, Rule):
+            return self.head == other.head and self.body == other.body
+        else:
+            return False
+
 
 class Lexicon:
     """ defines the lexicon class """
@@ -27,5 +36,8 @@ class Lexicon:
     def addRules(self, *args):
         for rule in args:
             self.addRule(rule)
+    def isPOS(self):
+        """ returns true if every rule has a single string """
+        return all(rule.isPOS() for rule in self._rules)
     def __repr__(self):
         return "<Lexicon {}>".format(self.name)
