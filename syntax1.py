@@ -1,5 +1,6 @@
 from utility import Lexicon
-from generator import randomSequence
+from generator import randomSequence, randomTree
+from pptree import print_tree
 
 # --- POS lexicons
 Noun = Lexicon("Noun")
@@ -63,4 +64,4 @@ Statement.addRule("to", VerbPhrase, PrepositionalPhrase, "to", VerbPhrase, NounP
 Statement.addRule("we", VerbPhrase, NounPhrase, PrepositionalPhrase)
 
 if __name__ == "__main__":
-    print(randomSequence(Statement))
+    print_tree(randomTree(Statement))
