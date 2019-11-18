@@ -29,9 +29,3 @@ class Lexicon:
             self.addRule(rule)
     def __repr__(self):
         return "<Lexicon {}>".format(self.name)
-
-class Node:
-    """ defines the node class used to represent the parse tree """
-    def __init__(self, name, children):
-        self.name = name
-        self.children = children
