@@ -30,12 +30,14 @@ class Lexicon:
         self._rules = []
     def addRule(self, *args):
         self._rules.append(Rule(self, args))
+        return self
     def getRules(self, lmda = lambda r : True):
         """ get rules that satisfy lmda(r) """
         return [ r for r in self._rules if lmda(r) ]
     def addRules(self, *args):
         for rule in args:
             self.addRule(rule)
+        return self
     def isPOS(self):
         """ returns true if every rule has a single string """
         return all(rule.isPOS() for rule in self._rules)

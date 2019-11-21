@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Clement Michard (c) 2015
+Modified from Clement Michard (c) 2015
 """
 import copy
 

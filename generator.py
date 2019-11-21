@@ -17,3 +17,9 @@ def randomTree(lexicon):
     n = Node(lexicon.name)
     n.children = [ randomTree(l) for l in rule.body ]
     return n
+
+def tree2Sequence(root):
+    if not root.children:
+        return [root.name]
+    children = [ tree2Sequence(node) for node in root.children ]
+    return list(itertools.chain(*children))
