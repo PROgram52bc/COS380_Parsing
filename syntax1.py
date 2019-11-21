@@ -1,5 +1,5 @@
 from utility import Lexicon
-from generator import randomSequence, randomTree
+from generator import randomSequence, randomTree, tree2Sequence
 from pptree import print_tree
 
 # --- POS lexicons
@@ -28,7 +28,7 @@ Adjective.addRules("excellent", "life-threatening", "poor", "better", "challengi
 
 Verb = Lexicon("Verb")
 Verb.addRules("create", "bring", "inspire", "increase", "mobilize", "undertake", "develop", "support")
-Verb.addRule("engage", "in")
+# Verb.addRule("engage", "in")
 
 Preposition = Lexicon("Preposition")
 Preposition.addRules("about", "below", "off", "toward", "above", "beneath", "for", "on", "under", "across", "beside", "from", "onto", "underneath", "after", "between", "in", "out", "until", "against", "beyond", "outside", "up", "along", "but", "inside", "over", "upon", "among", "by", "past", "around", "concerning", "regarding", "with", "at", "despite", "into", "since", "within", "down", "like", "through", "without", "before", "during", "near", "throughout", "behind", "of", "to")
@@ -58,10 +58,13 @@ SubordinateClause = Lexicon("SubordinateClause")
 SubordinateClause.addRule(RelativePronoun, VerbPhrase, NounPhrase)
 SubordinateClause.addRule(SubordinateConjunction, NounPhrase, VerbPhrase, NounPhrase)
 
-Statement = Lexicon("Statement")
-Statement.addRule("to", VerbPhrase, NounPhrase, SubordinateClause)
-Statement.addRule("to", VerbPhrase, PrepositionalPhrase, "to", VerbPhrase, NounPhrase)
-Statement.addRule("we", VerbPhrase, NounPhrase, PrepositionalPhrase)
+Sentence = Lexicon("Sentence")
+Sentence.addRule("to", VerbPhrase, NounPhrase, SubordinateClause)
+Sentence.addRule("to", VerbPhrase, PrepositionalPhrase, "to", VerbPhrase, NounPhrase)
+Sentence.addRule("we", VerbPhrase, NounPhrase, PrepositionalPhrase)
 
 if __name__ == "__main__":
-    print_tree(randomTree(Statement))
+    tree = randomTree(Sentence)
+    print_tree(tree)
+    sequence = tree2Sequence(tree)
+    print(" ".join(sequence))
