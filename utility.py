@@ -17,9 +17,11 @@ class Rule:
     def __repr__(self):
         return "<Rule {} => {}>".format(repr(self.head), repr(self.body))
     def __eq__(self, other):
-        if isinstance(other, Rule):
+        if isinstance(other, self.__class__):
             return self.head == other.head and self.body == other.body
         else:
+            print("__eq__ in Rule failed:")
+            print(other.__class__, "is not", self.__class__)
             return False
 
 
@@ -35,6 +37,7 @@ class Lexicon:
         """ get rules that satisfy lmda(r) """
         return [ r for r in self._rules if lmda(r) ]
     def addRules(self, *args):
+        """ short cut to add many one-element rules """
         for rule in args:
             self.addRule(rule)
         return self
@@ -43,3 +46,50 @@ class Lexicon:
         return all(rule.isPOS() for rule in self._rules)
     def __repr__(self):
         return "<Lexicon {}>".format(self.name)
+    def __eq__(self, other):
+        if isinstance(other, self.__class__):
+            return self.name == other.name
+        else:
+            return False
+
+class Rules:
+    """ a collection of rules """
+    def __init__(self):
+        self._rules = []
+        self._lexicons = {}
+    def hasLexicon(self, name):
+        return name in self._lexicons
+    def getLexicon(self, name):
+        """ returns the lexicon with 'name' if it exists, otherwise create an empty lexicon and return it """
+        if name not in self._lexicons:
+            self._lexicons[name] = Lexicon(name)
+        return self._lexicons[name]
+    def addRule(self, head, body):
+        """ head is a lexicon|string, body is a list or tuple of lexicon(s)
+        Client should call getLexicon() method to get the lexicon to pass them as arguments"""
+        if isinstance(head, str):
+            head = self.getLexicon(head)
+        rule = Rule(head, body)
+        if rule not in self._rules:
+            self._rules.append(Rule(head, body))
+            head.addRule(*body)
+    def fromLexicon(self, lexicon, recursive=True):
+        """ add rules from a lexicon """
+        for rule in lexicon.getRules():
+            # copy the head
+            head = self.getLexicon(lexicon.name)
+            body = []
+            for bodyLexicon in rule.body:
+                # handles recursion
+                if recursive and isinstance(bodyLexicon, Lexicon) and bodyLexicon.name not in self._lexicons:
+                    self.fromLexicon(bodyLexicon, True)
+                # make copy of the lexicons in body
+                bodyLexicon = self.getLexicon(bodyLexicon.name) if isinstance(bodyLexicon, Lexicon) else bodyLexicon
+                body.append(bodyLexicon)
+            self.addRule(head, body)
+    def getRules(self, lmda = lambda r : True):
+        """ get rules that satisfy lmda(r) """
+        return [ r for r in self._rules if lmda(r) ]
+    def __contains__(self, item):
+        return item in self._rules
+
