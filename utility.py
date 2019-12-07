@@ -73,20 +73,20 @@ class Rules:
         if rule not in self._rules:
             self._rules.append(Rule(head, body))
             head.addRule(*body)
+    def addRuleCopy(self, rule):
+        # copy the head
+        head = self.getLexicon(rule.head.name)
+        body = [ self.getLexicon(lexicon.name) if isinstance(lexicon, Lexicon) else lexicon for lexicon in rule.body ]
+        self.addRule(head, body)
     def fromLexicon(self, lexicon, recursive=True):
         """ add rules from a lexicon """
+        if not isinstance(lexicon, Lexicon): return
         for rule in lexicon.getRules():
-            # copy the head
-            head = self.getLexicon(lexicon.name)
-            body = []
-            for bodyLexicon in rule.body:
+            self.addRuleCopy(rule)
+            if recursive: 
                 # handles recursion
-                if recursive and isinstance(bodyLexicon, Lexicon) and bodyLexicon.name not in self._lexicons:
+                for bodyLexicon in rule.body:
                     self.fromLexicon(bodyLexicon, True)
-                # make copy of the lexicons in body
-                bodyLexicon = self.getLexicon(bodyLexicon.name) if isinstance(bodyLexicon, Lexicon) else bodyLexicon
-                body.append(bodyLexicon)
-            self.addRule(head, body)
     def getRules(self, lmda = lambda r : True):
         """ get rules that satisfy lmda(r) """
         return [ r for r in self._rules if lmda(r) ]
