@@ -66,27 +66,36 @@ class Rules:
         return self._lexicons[name]
     def addRule(self, head, body):
         """ head is a lexicon|string, body is a list or tuple of lexicon(s)
-        Client should call getLexicon() method to get the lexicon to pass them as arguments"""
+        This method does not make copy. To ensure unique rule objects in the collection, client should either call 'addRuleCopy' method or call getLexicon() method to get the lexicon to pass them as arguments
+        This method does equality check before adding to the collection, so if the rule already exists, it will not be added again.
+        returns the rule added, if any, otherwise returns None
+        """
         if isinstance(head, str):
             head = self.getLexicon(head)
         rule = Rule(head, body)
         if rule not in self._rules:
             self._rules.append(Rule(head, body))
             head.addRule(*body)
-    def addRuleCopy(self, rule):
+            # print("Added new rule", rule)
+            return rule
+    def addRuleCopy(self, head, body):
+        """ same as addRule, but make a copy of the rule's component instead of linking directly to it """
         # copy the head
-        head = self.getLexicon(rule.head.name)
-        body = [ self.getLexicon(lexicon.name) if isinstance(lexicon, Lexicon) else lexicon for lexicon in rule.body ]
-        self.addRule(head, body)
+        headCopy = self.getLexicon(head.name) if isinstance(head, Lexicon) else self.getLexicon(head)
+        # copy the body
+        bodyCopy = [ self.getLexicon(lexicon.name) if isinstance(lexicon, Lexicon) else lexicon for lexicon in body ]
+        return self.addRule(headCopy, bodyCopy)
     def fromLexicon(self, lexicon, recursive=True):
-        """ add rules from a lexicon """
-        if not isinstance(lexicon, Lexicon): return
+        """ add rules from a lexicon, if lexicon's name already exists in rule, it will be ignored to prevent from infinite recursion """
+        if (not isinstance(lexicon, Lexicon) or
+            lexicon.name in self._lexicons): return
         for rule in lexicon.getRules():
-            self.addRuleCopy(rule)
             if recursive: 
-                # handles recursion
+                # handles recursion first, otherwise the children will be ignored because they already exist in the collection
                 for bodyLexicon in rule.body:
                     self.fromLexicon(bodyLexicon, True)
+            self.addRuleCopy(rule.head, rule.body)
+        return self
     def getRules(self, lmda = lambda r : True):
         """ get rules that satisfy lmda(r) """
         return [ r for r in self._rules if lmda(r) ]
